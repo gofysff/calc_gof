@@ -75,6 +75,7 @@ Map<BValues, String> bSymbols = {
 /// if color is not specified then it will be default [kButtonEvalColor]
 Map<BValues, Color> bColors = {
   BValues.equal: kButtonEqualColor,
+  BValues.zeroInt: kButtonNumberColor,
   BValues.oneInt: kButtonNumberColor,
   BValues.twoInt: kButtonNumberColor,
   BValues.threeInt: kButtonNumberColor,

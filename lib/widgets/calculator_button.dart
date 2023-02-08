@@ -16,34 +16,33 @@ class CalculatorButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? labelColor;
 
+// TODO: try to change to MAterial button
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Container(
-            // width: size,
-            // height: size,
-            decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                      color: kButtonNumberColor,
-                      offset: Offset(1, 1),
-                      blurRadius: 2),
-                ],
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color: backgroundColor),
-            child: Center(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: labelColor,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w400),
-              ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Container(
+          // width: size,
+          // height: size,
+          decoration: BoxDecoration(
+              boxShadow: const [
+                BoxShadow(
+                    color: kButtonNumberColor,
+                    offset: Offset(1, 1),
+                    blurRadius: 2),
+              ],
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              color: backgroundColor),
+          child: Center(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: labelColor,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w400),
             ),
           ),
         ),

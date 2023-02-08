@@ -135,7 +135,7 @@ class Logic {
   /// function input is button what user pressed
   void updateCalculation(BValues buttonValue) {
     _lastInputedButton = buttonValue;
-    // print(buttonValue);
+    print(bSymbols[buttonValue]);
     if (buttonValue == BValues.delOneChar) {
       _delLastSymbol();
     } else if (buttonValue == BValues.delAll) {
