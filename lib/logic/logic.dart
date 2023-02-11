@@ -1,7 +1,8 @@
 import 'package:math_expressions/math_expressions.dart';
-import 'package:calc_gof/buttons.dart';
+import 'package:calc_gof/logic/buttons.dart';
 
 /// main class for all logic of our calculator
+enum ButtonClassification { numbers, arifmeticActions, equal, special }
 
 class Logic {
   /// contain last result of the calculation
@@ -21,6 +22,28 @@ class Logic {
   late BValues _lastInputedButton;
 
   bool _isDotPressed = false;
+
+  static const Map<ButtonClassification, List<BValues>> buttonClassification = {
+    ButtonClassification.numbers: [
+      BValues.zeroInt,
+      BValues.oneInt,
+      BValues.twoInt,
+      BValues.threeInt,
+      BValues.fourInt,
+      BValues.fiveInt,
+      BValues.sixInt,
+      BValues.sevenInt,
+      BValues.eightInt,
+      BValues.nineInt
+    ],
+    ButtonClassification.equal: [BValues.equal],
+    ButtonClassification.arifmeticActions: [
+      BValues.addition,
+      BValues.subtraction,
+      BValues.multiplication,
+      BValues.division
+    ]
+  };
 
   set lastInputedButton(BValues userButton) {
     _lastInputedButton = userButton;
@@ -48,7 +71,7 @@ class Logic {
   /// methods what change the currentStateEvaluation
   /// +1 inputed symbol accordingly
   void _delLastSymbol() {
-    if (_currentStateEvaluation.length > 1) {
+    if (_currentStateEvaluation.isNotEmpty) {
       //! probably here could be mistake
       if (_currentStateEvaluation[_currentStateEvaluation.length - 1] ==
           bSymbols[BValues.dot]) {
@@ -56,7 +79,7 @@ class Logic {
         _isDotPressed = false;
       }
       _currentStateEvaluation = _currentStateEvaluation.substring(
-          0, _currentStateEvaluation.length - 2);
+          0, _currentStateEvaluation.length - 1);
     }
   }
 
@@ -136,19 +159,25 @@ class Logic {
   void updateCalculation(BValues buttonValue) {
     _lastInputedButton = buttonValue;
     print(bSymbols[buttonValue]);
-    if (buttonValue == BValues.delOneChar) {
-      _delLastSymbol();
-    } else if (buttonValue == BValues.delAll) {
-      _delAllSymbols();
-    } else if (buttonValue == BValues.equal) {
-      _pressedGetResult();
-    } else if (buttonValue == BValues.dot) {
-      if (_isDotPressed == false) {
-        _addSymbol(bSymbols[BValues.dot]!);
+    switch (buttonValue) {
+      case BValues.delOneChar:
+        _delLastSymbol();
+        break;
+      case BValues.delAll:
+        _delAllSymbols();
+        break;
+      case BValues.equal:
+        _pressedGetResult();
+        break;
+      case BValues.dot:
+        if (!_isDotPressed) {
+          _isDotPressed = true;
+          _addSymbol(bSymbols[BValues.dot]!);
+        }
         // otherwise do nothing
-      } else {
+        break;
+      default:
         _addSymbol(bSymbols[buttonValue]!);
-      }
     }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:calc_gof/logic.dart';
+import 'package:calc_gof/logic/logic.dart';
 
 void main() {
   Logic lg = Logic();

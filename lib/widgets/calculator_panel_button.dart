@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:calc_gof/buttons.dart';
+import 'package:calc_gof/logic/buttons.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/constant_colors.dart';

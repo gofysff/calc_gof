@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'constants/constant_colors.dart';
+import '../constants/constant_colors.dart';
 
 /// Show what action user choose (what button pressed)
 enum BValues {
