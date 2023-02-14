@@ -55,7 +55,6 @@ class Logic {
   /// delete all string(all computation)
   void _delAllSymbols() {
     _historyEvaluation = "";
-
     _expressionInButtons.clear();
   }
 
@@ -80,7 +79,7 @@ class Logic {
         .replaceAll(bSymbols[BValues.multiplication]!, '*');
   }
 
-  //TODO:
+  //TODO: check that method
   List<BValues> convertResToButtons(String res) {
     List<BValues> result = [];
     if (_isNumeric(res)) {
@@ -96,8 +95,6 @@ class Logic {
     return result;
   }
 
-  //TODO:
-
   /// Returns null if [_expressionInButtons] is empty
   /// else returns result of checking
   bool? _isLastButtonArifmetic(BValues button) => lastButton != null
@@ -111,6 +108,8 @@ class Logic {
 
   ///Prepares res to beautiful string
   String _prepareRes(double res) {
+    // TODO: make rounding
+    // TODO: add E format
     ///  reducing trailing '.0' if res is integer
     return res % 1 == 0.0 ? res.toInt().toString() : res.toString();
   }
@@ -134,6 +133,7 @@ class Logic {
   ///
   /// only computation!
   String evaluate(String expression) {
+    //TODO: rework this method
     String express = _prepareExpressionToEval(expression);
     try {
       Expression expParsed = Parser().parse(express);
