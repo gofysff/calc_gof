@@ -39,6 +39,7 @@ dependencies:
   math_expressions: ^2.3.1
   states_rebuilder: ^6.2.0
   provider: ^6.0.5
+  math_parser: ^1.5.0
 
 dev_dependencies:
   flutter_test:

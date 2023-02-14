@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // import 'package:calc_gof/constants/constant_colors.dart';
+import 'package:calc_gof/constants/constant_colors.dart';
 import 'package:calc_gof/logic/storage_results.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,18 +16,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // final mainLogic = Logic();
-
-  // void updateCalculation(BValues buttonValue) {
-  //   mainLogic.updateCalculation(buttonValue);
-  //   setState(() {});
-  // }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: FloatingActionButton(
+                backgroundColor: kButtonEqualColor,
+                foregroundColor: Colors.white,
+                child: const Icon(Icons.view_comfy_alt),
+                onPressed: () =>
+                    context.read<StorageResults>()..changeButtonPanel()),
+          ),
           const Expanded(
             flex: 2,
             child: TextPanel(),
@@ -35,11 +38,13 @@ class _HomePageState extends State<HomePage> {
 
           //! Main field with buttons
           Expanded(
-            //TODO: ADD real functionality
             flex: 5,
-            child: CalcPanelButtons(
-                onTap: (bValue) =>
-                    context.read<StorageResults>()..updateData(bValue)),
+            child: Consumer<StorageResults>(
+              builder: (context, storageResults, child) => CalcPanelButtons(
+                  isIncludeTrigonometry: storageResults.isIncludeTrigonometry,
+                  onTap: (bValue) =>
+                      context.read<StorageResults>()..updateData(bValue)),
+            ),
           ),
         ],
       ),

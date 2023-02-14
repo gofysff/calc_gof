@@ -19,65 +19,59 @@ class Logic {
   /// contains all buttons user pressed
   ///
   /// it used for calculating the result
-  final List<BValues> _allPressedExpressionButtons = [];
+  final List<BValues> _expressionInButtons = [];
 
   ///last inputed button
   // String _lastInputedButton = "";
-  late BValues _lastInputedButton;
 
-  set lastInputedButton(BValues userButton) {
-    _lastInputedButton = userButton;
-  }
+  BValues? get lastInputedButton =>
+      _expressionInButtons.isEmpty ? null : _expressionInButtons.last;
 
   String get historyEvaluation {
     return _historyEvaluation;
   }
 
-  String get currentStateEvaluation {
-    return _currentStateEvaluation;
-  }
+  /// Get the string representation of expression from
+  String get currentStateEvaluation =>
+      [for (var el in _expressionInButtons) el.toStringg()].join();
 
-  String? get lastSymbolCurrentEvaluation => currentStateEvaluation.isEmpty
-      ? null
-      : currentStateEvaluation[currentStateEvaluation.length - 1];
+  BValues? get lastButton =>
+      _expressionInButtons.isNotEmpty ? _expressionInButtons.last : null;
 
-  /// methods what change the currentStateEvaluation
-  /// +1 inputed symbol accordingly
-  void _addSymbol(String symbol) {
-    _allPressedExpressionButtons.add(_lastInputedButton);
-
-    _currentStateEvaluation += symbol;
-    // }
-  }
+  /// methods what add pressed button to the [expressionInButtons]
+  void _addSymbol(BValues button) => _expressionInButtons.add(button);
 
   /// methods what change the currentStateEvaluation
   /// +1 inputed symbol accordingly
-  void _delLastSymbol({bool canDeleteFromListButtons = true}) {
-    if (_currentStateEvaluation.isNotEmpty) {
-      int lengthDelete = bSymbols[_allPressedExpressionButtons.last]!.length;
-      // count how many symbols weight last button (cos = 3), (+ = 1)
-      _currentStateEvaluation = _currentStateEvaluation.substring(
-          0, _currentStateEvaluation.length - lengthDelete);
-
-      if (canDeleteFromListButtons) {
-        // for instance (after u get answer u can't )
-        _allPressedExpressionButtons.removeLast();
-      }
-      // TODO: fix error (not all buttons are pressed)
+  void _delLastSymbol() {
+    if (_expressionInButtons.isNotEmpty) {
+      _expressionInButtons.removeLast();
+    } else {
+      // we delete and history expression also
+      _delLastSymbol();
     }
   }
 
   /// delete all string(all computation)
   void _delAllSymbols() {
     _historyEvaluation = "";
-    _currentStateEvaluation = '';
-    // _currentResult = 0;
-    _allPressedExpressionButtons.clear();
+
+    _expressionInButtons.clear();
   }
 
   /// check wherether is this string a number
 
   _isNumeric(string) => num.tryParse(string) != null;
+
+  bool _canPutDot() {
+    if (_expressionInButtons.isEmpty) {
+      return false;
+    }
+    //  else if () {
+    //TODO: complete this thing
+    // }
+    return true;
+  }
 
   /// Prepare the expression by replacing user symbols with their corresponding analogue
   String _prepareExpressionToEval(String expression) {
@@ -102,6 +96,19 @@ class Logic {
     return result;
   }
 
+  //TODO:
+
+  /// Returns null if [_expressionInButtons] is empty
+  /// else returns result of checking
+  bool? _isLastButtonArifmetic(BValues button) => lastButton != null
+      ? [
+          BValues.addition,
+          BValues.subtraction,
+          BValues.multiplication,
+          BValues.division
+        ].contains(button)
+      : null;
+
   ///Prepares res to beautiful string
   String _prepareRes(double res) {
     ///  reducing trailing '.0' if res is integer
@@ -110,9 +117,10 @@ class Logic {
 
   /// method what should be envolved when pressed "="
   void _pressedGetResult() {
+    // TODO: переработать полностью метод, добавив новый парсер
     _historyEvaluation = '$_currentStateEvaluation=';
-    _allPressedExpressionButtons.clear();
-    _lastInputedButton = BValues.equal;
+    _expressionInButtons.clear();
+    // _lastInputedButton = BValues.equal;
     //Todo: какая-то хуйня все сломало, но надо использовать другой парсер
     // TODO: add here convertaion [allPressedExpressionButtons] to string and pass it to evaluate func
 
@@ -156,37 +164,62 @@ class Logic {
         _pressedGetResult();
         break;
       case BValues.dot:
-        if (currentStateEvaluation.isEmpty) {
-          // do nothing
-        } else if (!buttonsInt.contains(_lastInputedButton)) {
-          // -, + *  etc.
-        }
-        //         else if (
-        //         ){}
-        // else if (){}
-        else {
-          // all forbidding conditions passed;
-          continue add_element;
-        }
-        // otherwise do nothing
+        if (_expressionInButtons.isEmpty) {}
+        //   //TODO: refactor this also
         break;
       case BValues.sin:
         _addSymbol(BValues.leftBracket);
-        _addSymbol(BValues.sin);
+        _addSymbol(buttonValue);
+        break;
       case BValues.cos:
         _addSymbol(BValues.leftBracket);
-        _addSymbol(BValues.cos);
+        _addSymbol(buttonValue);
+        break;
       case BValues.tg:
         _addSymbol(BValues.leftBracket);
-        _addSymbol(BValues.sin);
+        _addSymbol(buttonValue);
+        break;
       case BValues.addition:
-        if (_) break;
-
-      add_element:
+        bool? check = _isLastButtonArifmetic(buttonValue);
+        // add only if this isn't the first symbol and previous was not the arifmetic
+        if (check != null) {
+          if (!check) {
+            _addSymbol(buttonValue);
+          }
+        }
+        break;
+      case BValues.multiplication:
+        bool? check = _isLastButtonArifmetic(buttonValue);
+        // add only if this isn't the first symbol and previous was not the arifmetic
+        if (check != null) {
+          if (!check) {
+            _addSymbol(buttonValue);
+          }
+        }
+        break;
+      case BValues.division:
+        bool? check = _isLastButtonArifmetic(buttonValue);
+        // add only if this isn't the first symbol and previous was not the arifmetic
+        if (check != null) {
+          if (!check) {
+            _addSymbol(buttonValue);
+          }
+        }
+        break;
+      case BValues.subtraction:
+        bool? check = _isLastButtonArifmetic(buttonValue);
+        // add only if this isn't the first symbol and previous was not the arifmetic
+        if (check != null) {
+          if (!check) {
+            _addSymbol(buttonValue);
+          }
+        } else {
+          _addSymbol(buttonValue);
+        }
+        break;
       default:
-        _lastInputedButton = buttonValue;
-        _addSymbol(bSymbols[buttonValue]!);
-        print(_allPressedExpressionButtons);
+        _addSymbol(buttonValue);
+      // print(_expressionInButtons);
     }
   }
 }

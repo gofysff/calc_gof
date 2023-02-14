@@ -32,9 +32,27 @@ enum BValues {
   power,
   piConstant,
   eConstant,
-  ePow,
+  sqrt,
   tenPow,
 }
+
+extension ParseToString on BValues {
+  /// return string representation of button
+  String toStringg() => bSymbols[this]!;
+}
+
+List<BValues> buttonsInt = [
+  BValues.zeroInt,
+  BValues.oneInt,
+  BValues.twoInt,
+  BValues.threeInt,
+  BValues.fourInt,
+  BValues.fiveInt,
+  BValues.sixInt,
+  BValues.sevenInt,
+  BValues.eightInt,
+  BValues.nineInt
+];
 
 /// Match buttonName [BValues] and symbols what will be displayed on screen
 Map<BValues, String> bSymbols = {
@@ -44,11 +62,11 @@ Map<BValues, String> bSymbols = {
   BValues.division: '/',
   BValues.equal: '=',
   BValues.dot: '.',
-  BValues.cos: 'cos(',
-  BValues.sin: 'sin(',
-  BValues.tg: 'tg(',
-  BValues.ln: 'ln(',
-  BValues.lg: 'lg(',
+  BValues.cos: 'cos',
+  BValues.sin: 'sin',
+  BValues.tg: 'tan',
+  BValues.ln: 'ln',
+  BValues.lg: 'log',
   BValues.delOneChar: '\u{232B}',
   BValues.delAll: '\u{2421}',
   BValues.leftBracket: '(',
@@ -66,8 +84,8 @@ Map<BValues, String> bSymbols = {
   BValues.sevenInt: '7',
   BValues.eightInt: '8',
   BValues.nineInt: '9',
-  BValues.tenPow: '10^',
-  BValues.ePow: 'e^',
+  BValues.tenPow: 'E',
+  BValues.sqrt: '\u{221A}',
 };
 
 /// Match buttonName [BValues] and colors what will be displayed on screen
@@ -85,8 +103,8 @@ Map<BValues, Color> bColors = {
   BValues.sevenInt: kButtonNumberColor,
   BValues.eightInt: kButtonNumberColor,
   BValues.nineInt: kButtonNumberColor,
-  BValues.tenPow: kButtonNumberColor,
-  BValues.ePow: kButtonNumberColor,
+  // BValues.tenPow: kButtonNumberColor,
+  // BValues.ePow: kButtonNumberColor,
 };
 
 /// Match buttonName [BValues] and ratio(flex) for specific button in row
