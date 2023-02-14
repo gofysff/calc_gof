@@ -100,7 +100,7 @@ class _CalcPanelButtonsState extends State<CalcPanelButtons> {
                     // if ratio is specified it will be chosen else default 1
                     child: CalculatorButton(
                       paddingSize: isIncludeTrigonometry ? 6 : 9,
-                      fontSize: isIncludeTrigonometry ? 22 : 30,
+                      fontSize: isIncludeTrigonometry ? 20 : 30,
                       label: bSymbols[allButtons[i][j]]!,
                       onTap: () => widget.onTap(allButtons[i][j]),
                       backgroundColor:

@@ -1,45 +1,46 @@
-import 'package:math_expressions/math_expressions.dart';
 import 'package:calc_gof/logic/buttons.dart';
-
+import 'package:math_parser/math_parser.dart';
+import 'dart:math';
 import '../constants/constant_messages.dart';
 
 /// main class for all logic of our calculator
 
 class Logic {
-  /// TODO: avoid from ising string like main thing
+  // TODO: change thing tha I can work with result by default
   /// contain last result of the calculation
   /// or the chain of symbols what was inputted by user before he putted the result button
+
+  /// string what represents the last result of the calculation
   String _historyEvaluation = "";
 
-  /// current state eval using for intermediate panel with text
-  ///
-  /// what also show result after evaluation
-  String _currentStateEvaluation = "";
+  /// flag indicating that something goes wrong during calculation
+  bool _showMessageError = false;
 
   /// contains all buttons user pressed
   ///
   /// it used for calculating the result
   final List<BValues> _expressionInButtons = [];
 
-  ///last inputed button
-  // String _lastInputedButton = "";
-
   BValues? get lastInputedButton =>
       _expressionInButtons.isEmpty ? null : _expressionInButtons.last;
 
-  String get historyEvaluation {
-    return _historyEvaluation;
-  }
+  /// string what represents the last result of the calculation
+
+  String get historyEvaluation => _historyEvaluation;
 
   /// Get the string representation of expression from
-  String get currentStateEvaluation =>
-      [for (var el in _expressionInButtons) el.toStringg()].join();
+  String get currentStateEvaluation => _showMessageError == false
+      ? [for (var el in _expressionInButtons) el.toStringg()].join()
+      : kMessageError;
 
   BValues? get lastButton =>
       _expressionInButtons.isNotEmpty ? _expressionInButtons.last : null;
 
   /// methods what add pressed button to the [expressionInButtons]
-  void _addSymbol(BValues button) => _expressionInButtons.add(button);
+  void _addSymbol(BValues button) {
+    _showMessageError = false;
+    _expressionInButtons.add(button);
+  }
 
   /// methods what change the currentStateEvaluation
   /// +1 inputed symbol accordingly
@@ -48,7 +49,7 @@ class Logic {
       _expressionInButtons.removeLast();
     } else {
       // we delete and history expression also
-      _delLastSymbol();
+      _delAllSymbols();
     }
   }
 
@@ -65,10 +66,23 @@ class Logic {
   bool _canPutDot() {
     if (_expressionInButtons.isEmpty) {
       return false;
+    } else if (lastButton!.isNotInt) {
+      return false;
     }
-    //  else if () {
-    //TODO: complete this thing
-    // }
+
+    int counterDots = 0;
+    for (int i = _expressionInButtons.length - 1; i >= 0; i--) {
+      if (_expressionInButtons[i] == BValues.dot) {
+        counterDots += 1;
+      } else if (_expressionInButtons[i].isNotInt) {
+        break;
+      }
+    }
+    if (counterDots == 1) {
+      // we met dot in the number what we get from slice of buttons
+      return false;
+    }
+
     return true;
   }
 
@@ -76,10 +90,10 @@ class Logic {
   String _prepareExpressionToEval(String expression) {
     return expression
         .toLowerCase()
-        .replaceAll(bSymbols[BValues.multiplication]!, '*');
+        .replaceAll(BValues.multiplication.toStringg(), '*')
+        .replaceAll(BValues.sqrt.toStringg(), 'sqrt');
   }
 
-  //TODO: check that method
   List<BValues> convertResToButtons(String res) {
     List<BValues> result = [];
     if (_isNumeric(res)) {
@@ -103,7 +117,7 @@ class Logic {
           BValues.subtraction,
           BValues.multiplication,
           BValues.division
-        ].contains(button)
+        ].contains(lastButton)
       : null;
 
   ///Prepares res to beautiful string
@@ -116,16 +130,14 @@ class Logic {
 
   /// method what should be envolved when pressed "="
   void _pressedGetResult() {
-    // TODO: переработать полностью метод, добавив новый парсер
-    _historyEvaluation = '$_currentStateEvaluation=';
-    _expressionInButtons.clear();
-    // _lastInputedButton = BValues.equal;
-    //Todo: какая-то хуйня все сломало, но надо использовать другой парсер
-    // TODO: add here convertaion [allPressedExpressionButtons] to string and pass it to evaluate func
+    _historyEvaluation = '$currentStateEvaluation=';
 
-    _currentStateEvaluation = evaluate(_currentStateEvaluation);
-    if (_isNumeric(_currentStateEvaluation)) {
-      // TODO: make convert function (string to buttons)
+    var result = evaluate(currentStateEvaluation);
+    _expressionInButtons.clear();
+    if (_isNumeric(result)) {
+      _expressionInButtons.addAll(convertResToButtons(result));
+    } else {
+      _showMessageError = true;
     }
   }
 
@@ -133,17 +145,17 @@ class Logic {
   ///
   /// only computation!
   String evaluate(String expression) {
-    //TODO: rework this method
-    String express = _prepareExpressionToEval(expression);
+    expression = _prepareExpressionToEval(expression);
     try {
-      Expression expParsed = Parser().parse(express);
-
-      double resEvaluated =
-          expParsed.evaluate(EvaluationType.REAL, ContextModel());
-
-      return _prepareRes(resEvaluated);
-    } catch (e) {
-      print('exception is $e');
+      final expr = MathNodeExpression.fromString(expression).calc(
+        MathVariableValues({
+          BValues.piConstant.toStringg(): pi,
+          BValues.eConstant.toStringg(): e
+        }),
+      );
+      return expr.toString();
+    } catch (error) {
+      print('exception is $error');
       return kMessageError;
     }
   }
@@ -164,20 +176,24 @@ class Logic {
         _pressedGetResult();
         break;
       case BValues.dot:
-        if (_expressionInButtons.isEmpty) {}
+        if (_expressionInButtons.isNotEmpty) {
+          if (_canPutDot()) {
+            _addSymbol(buttonValue);
+          }
+        }
         //   //TODO: refactor this also
         break;
       case BValues.sin:
-        _addSymbol(BValues.leftBracket);
         _addSymbol(buttonValue);
+        _addSymbol(BValues.leftBracket);
         break;
       case BValues.cos:
-        _addSymbol(BValues.leftBracket);
         _addSymbol(buttonValue);
+        _addSymbol(BValues.leftBracket);
         break;
       case BValues.tg:
-        _addSymbol(BValues.leftBracket);
         _addSymbol(buttonValue);
+        _addSymbol(BValues.leftBracket);
         break;
       case BValues.addition:
         bool? check = _isLastButtonArifmetic(buttonValue);
@@ -221,5 +237,6 @@ class Logic {
         _addSymbol(buttonValue);
       // print(_expressionInButtons);
     }
+    print(buttonValue);
   }
 }

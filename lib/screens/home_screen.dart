@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: [
           Align(
-            alignment: Alignment.topLeft,
+            alignment: Alignment.topRight,
             child: FloatingActionButton(
                 backgroundColor: kButtonEqualColor,
                 foregroundColor: Colors.white,

@@ -39,6 +39,12 @@ enum BValues {
 extension ParseToString on BValues {
   /// return string representation of button
   String toStringg() => bSymbols[this]!;
+
+  /// check whether button is Integer
+  bool get isInt => buttonsInt.contains(this);
+
+  /// check whether button is Integer
+  bool get isNotInt => buttonsInt.contains(this) == false;
 }
 
 List<BValues> buttonsInt = [
@@ -68,7 +74,7 @@ Map<BValues, String> bSymbols = {
   BValues.ln: 'ln',
   BValues.lg: 'log',
   BValues.delOneChar: '\u{232B}',
-  BValues.delAll: '\u{2421}',
+  BValues.delAll: 'AC',
   BValues.leftBracket: '(',
   BValues.rightBracket: ')',
   BValues.piConstant: '\u{03C0}',
