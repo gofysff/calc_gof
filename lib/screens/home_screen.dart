@@ -21,14 +21,17 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Column(
         children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: FloatingActionButton(
-                backgroundColor: kButtonEqualColor,
-                foregroundColor: Colors.white,
-                child: const Icon(Icons.view_comfy_alt),
-                onPressed: () =>
-                    context.read<StorageResults>()..changeButtonPanel()),
+          Padding(
+            padding: const EdgeInsets.only(right:20.0, top: 20.0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: FloatingActionButton(
+                  backgroundColor: kButtonEqualColor,
+                  foregroundColor: Colors.white,
+                  child: const Icon(Icons.card_giftcard_rounded),
+                  onPressed: () =>
+                      context.read<StorageResults>()..changeButtonPanel()),
+            ),
           ),
           const Expanded(
             flex: 2,

@@ -19,7 +19,6 @@ class CalculatorButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? labelColor;
 
-// TODO: try to change to MAterial button
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -34,18 +33,12 @@ class CalculatorButton extends StatelessWidget {
           color: backgroundColor,
         ),
         child: MaterialButton(
+            elevation: 0.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
           onPressed: onTap,
           color: backgroundColor,
-          // child: Container(
-          //   decoration: BoxDecoration(
-          //     boxShadow: const [
-          //       BoxShadow(
-          //           color: kShadowColor, offset: Offset(2.5, 2.5), blurRadius: 2),
-          //     ],
-          //     borderRadius: const BorderRadius.all(Radius.circular(10)),
-          //     color: backgroundColor,
-          //   ),
-          // shape:
           child: Center(
             child: Text(
               label,

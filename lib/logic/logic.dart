@@ -4,9 +4,9 @@ import 'dart:math';
 import '../constants/constant_messages.dart';
 
 /// main class for all logic of our calculator
-
 class Logic {
-  // TODO: change thing tha I can work with result by default
+  // TODO: change thing that I can work with result by default
+
   /// contain last result of the calculation
   /// or the chain of symbols what was inputted by user before he putted the result button
 
