@@ -5,16 +5,20 @@ import '../constants/constant_messages.dart';
 
 /// main class for all logic of our calculator
 class Logic {
-  // TODO: change thing that I can work with result by default
-
   /// contain last result of the calculation
   /// or the chain of symbols what was inputted by user before he putted the result button
 
   /// string what represents the last result of the calculation
   String _historyEvaluation = "";
 
-  /// flag indicating that something goes wrong during calculation
-  bool _showMessageError = false;
+  /// flag that last button was [BValues.equal]
+  bool _isLastButtonEqual = false;
+
+  /// flag indicating that we got error during calculation
+  bool _getError = false;
+
+  /// temporary list what contains results of the calculation
+  final List<BValues> _tempResultsStorage = [];
 
   /// contains all buttons user pressed
   ///
@@ -26,19 +30,28 @@ class Logic {
 
   /// string what represents the last result of the calculation
 
-  String get historyEvaluation => _historyEvaluation;
+  String get historyEvaluation => _isLastButtonEqual ? _historyEvaluation : "";
 
   /// Get the string representation of expression from
-  String get currentStateEvaluation => _showMessageError == false
-      ? [for (var el in _expressionInButtons) el.toStringg()].join()
-      : kMessageError;
+  // String get currentStateEvaluation => _getError == false
+  //     ? [for (var el in _expressionInButtons) el.toStringg()].join()
+  //     : kMessageError;
+
+  String get currentStateEvaluation {
+    if (_getError == true) {
+      return kMessageError;
+    } else if (_isLastButtonEqual) {
+      return [for (var el in _tempResultsStorage) el.toStringg()].join();
+    } else {
+      return [for (var el in _expressionInButtons) el.toStringg()].join();
+    }
+  }
 
   BValues? get lastButton =>
       _expressionInButtons.isNotEmpty ? _expressionInButtons.last : null;
 
   /// methods what add pressed button to the [expressionInButtons]
   void _addSymbol(BValues button) {
-    _showMessageError = false;
     _expressionInButtons.add(button);
   }
 
@@ -54,10 +67,7 @@ class Logic {
   }
 
   /// delete all string(all computation)
-  void _delAllSymbols() {
-    _historyEvaluation = "";
-    _expressionInButtons.clear();
-  }
+  void _delAllSymbols() => _expressionInButtons.clear();
 
   /// check wherether is this string a number
 
@@ -135,10 +145,22 @@ class Logic {
     var result = evaluate(currentStateEvaluation);
     _expressionInButtons.clear();
     if (_isNumeric(result)) {
-      _expressionInButtons.addAll(convertResToButtons(result));
+      _tempResultsStorage.addAll(convertResToButtons(result));
     } else {
-      _showMessageError = true;
+      _getError = true;
     }
+  }
+
+  /// getting information about last calculation result
+  /// and writing to the main storage for expression[_expressionInButtons]
+  void _getInfoFromSTempStorage() =>
+      _expressionInButtons.addAll(_tempResultsStorage);
+
+  /// call after any pressed button except [BValues.equal]
+  void _resetAll() {
+    _isLastButtonEqual = false;
+    _getError = false;
+    _tempResultsStorage.clear();
   }
 
   /// function what perform computation
@@ -174,6 +196,8 @@ class Logic {
         break;
       case BValues.equal:
         _pressedGetResult();
+        _isLastButtonEqual = true;
+
         break;
       case BValues.dot:
         if (_expressionInButtons.isNotEmpty) {
@@ -181,7 +205,6 @@ class Logic {
             _addSymbol(buttonValue);
           }
         }
-        //   //TODO: refactor this also
         break;
       case BValues.sin:
         _addSymbol(buttonValue);
@@ -196,6 +219,7 @@ class Logic {
         _addSymbol(BValues.leftBracket);
         break;
       case BValues.addition:
+        _getInfoFromSTempStorage();
         bool? check = _isLastButtonArifmetic(buttonValue);
         // add only if this isn't the first symbol and previous was not the arifmetic
         if (check != null) {
@@ -205,6 +229,8 @@ class Logic {
         }
         break;
       case BValues.multiplication:
+        _getInfoFromSTempStorage();
+
         bool? check = _isLastButtonArifmetic(buttonValue);
         // add only if this isn't the first symbol and previous was not the arifmetic
         if (check != null) {
@@ -214,6 +240,8 @@ class Logic {
         }
         break;
       case BValues.division:
+        _getInfoFromSTempStorage();
+
         bool? check = _isLastButtonArifmetic(buttonValue);
         // add only if this isn't the first symbol and previous was not the arifmetic
         if (check != null) {
@@ -223,6 +251,8 @@ class Logic {
         }
         break;
       case BValues.subtraction:
+        _getInfoFromSTempStorage();
+
         bool? check = _isLastButtonArifmetic(buttonValue);
         // add only if this isn't the first symbol and previous was not the arifmetic
         if (check != null) {
@@ -237,6 +267,9 @@ class Logic {
         _addSymbol(buttonValue);
       // print(_expressionInButtons);
     }
-    print(buttonValue);
+
+    if (buttonValue != BValues.equal) {
+      _resetAll();
+    }
   }
 }
